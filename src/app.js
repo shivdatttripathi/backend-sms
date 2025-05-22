@@ -1,9 +1,9 @@
-const express = require("express");
-
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config({ path: "../.env" });
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON
 app.use(express.json());
 
-exports = app;
+export default app;
