@@ -1,7 +1,8 @@
+// Admin model admin is a school principal or owner 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const teacherSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -10,29 +11,22 @@ const teacherSchema = new mongoose.Schema(
     gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
     profilePicture: { type: String },
     schoolId: { type: mongoose.Schema.Types.ObjectId, ref: "School" },
-    qualification: { type: String },
-    isClassTeacher: { type: Boolean, default: false },
-    role: { type: String, default: "teacher" },
+    role: { type: String, default: "admin" },
+    
 
     employeeId: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 
-    subjectSpecialization: String,
-    classesAssigned: [String],
-    joiningDate: Date,
-    salary: Number,
-
-
-    isActive: { type: Boolean, default: true },
+    isActive : {type : Boolean , default : true}
   },
-  { timestamps: true }
+  { timestamps : true }
 );
 
 // Password hash middleware
-teacherSchema.pre("save", async function (next) {
+adminSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-module.exports = mongoose.model("Teacher", teacherSchema);
+module.exports = mongoose.model("Admin", adminSchema);
