@@ -1,7 +1,7 @@
 // Admin controller
-import asyncHandler from "express-async-handler";
-import Admin from "../Models/adminModel.js";
+import asyncHandler from "../utils/async.handler.js";
 import { generateToken } from "../utils/generateTokens.js";
+import Admin from "../Models/adminModel.js"
 // 1st admin register 
 // import module js syntax
 
@@ -51,7 +51,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Login successful", admin, token });
 });
 
-module.exports = {
+export {
     registerFirstAdmin,
     loginAdmin
 };

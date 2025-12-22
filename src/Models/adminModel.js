@@ -1,6 +1,6 @@
 // Admin model admin is a school principal or owner 
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const adminSchema = new mongoose.Schema(
   {
@@ -12,7 +12,7 @@ const adminSchema = new mongoose.Schema(
     profilePicture: { type: String },
     schoolId: { type: mongoose.Schema.Types.ObjectId, ref: "School" },
     role: { type: String, default: "admin" },
-    
+
 
     employeeId: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -29,4 +29,5 @@ adminSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = mongoose.model("Admin", adminSchema);
+const Admin = mongoose.model("Admin", adminSchema);
+export default Admin;
