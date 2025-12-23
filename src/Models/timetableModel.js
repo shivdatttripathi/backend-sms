@@ -1,52 +1,65 @@
-{
-  "schoolId": "653c12a4b5f92d0012e4b1a1",
-  "classId": "653c12a4b5f92d0012e4b2b2",
-  "sectionId": "653c12a4b5f92d0012e4b3c3",
-  "academicYear": "2024-2025",
-  "term": "Term 1",
-  "schedule": [
-    {
-      "day": "Monday",
-      "periods": [
-        {
-          "periodNumber": 1,
-          "subjectId": "653c12a4b5f92d0012e4b4d4",
-          "teacherId": "653c12a4b5f92d0012e4b5e5",
-          "roomId": "Room 101",
-          "startTime": "08:00",
-          "endTime": "08:45",
-          "type": "Lecture"
-        },
-        {
-          "periodNumber": 2,
-          "subjectId": "653c12a4b5f92d0012e4b4d5",
-          "teacherId": "653c12a4b5f92d0012e4b5e6",
-          "roomId": "Room 101",
-          "startTime": "08:45",
-          "endTime": "09:30",
-          "type": "Lecture"
-        },
-        {
-          "periodNumber": 3,
-          "startTime": "09:30",
-          "endTime": "10:00",
-          "type": "Break"
-        }
-      ]
-    },
-    {
-      "day": "Tuesday",
-      "periods": [
-        {
-          "periodNumber": 1,
-          "subjectId": "653c12a4b5f92d0012e4b4d4",
-          "teacherId": "653c12a4b5f92d0012e4b5e5",
-          "roomId": "Physics Lab",
-          "startTime": "08:00",
-          "endTime": "09:30",
-          "type": "Lab"
-        }
-      ]
+import mongoose from "mongoose";
+
+const periodSchema = new mongoose.Schema({
+  periodNumber: { type: Number }, // e.g., 1, 2, 3 (Helps in ordering)
+  subjectId: { type: mongoose.Schema.Types.ObjectId, ref: "Subject" }, // Optional for "Break"
+  teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" }, // Optional for "Break"
+  roomId: { type: String }, // e.g., "Room 101" or "Physics Lab"
+  
+  // Storing time as 24-hour string is best for Timetables (e.g., "09:00", "14:30")
+  startTime: { 
+    type: String, 
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v);
+      },
+      message: props => `${props.value} is not a valid time format! Use HH:mm (e.g. 09:30)`
     }
-  ]
-}
+  },
+  endTime: { 
+    type: String, 
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v);
+      },
+      message: props => `${props.value} is not a valid time format! Use HH:mm`
+    }
+  },
+  type: { 
+    type: String, 
+    enum: ["Lecture", "Lab", "Assembly", "Break", "Sports"], 
+    default: "Lecture" 
+  }
+});
+
+const timetableSchema = new mongoose.Schema(
+  {
+    schoolId: { type: mongoose.Schema.Types.ObjectId, ref: "School", required: true },
+    classId: { type: mongoose.Schema.Types.ObjectId, ref: "Class", required: true },
+    sectionId: { type: mongoose.Schema.Types.ObjectId, ref: "Section", required: true },
+    
+    academicYear: { type: String, required: true }, // e.g., "2024-2025"
+    term: { type: String, default: "Term 1" },
+    
+    // We group by Day of Week
+    schedule: [
+      {
+        day: { 
+            type: String, 
+            enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], 
+            required: true 
+        },
+        periods: [periodSchema]
+      }
+    ]
+  },
+  { timestamps: true }
+);
+
+// Compound Index: Ensure one timetable per Section per Term
+timetableSchema.index({ schoolId: 1, sectionId: 1, academicYear: 1, term: 1 }, { unique: true });
+
+const Timetable = mongoose.model("Timetable", timetableSchema);
+export default Timetable;
