@@ -17,8 +17,12 @@ export const authMiddleware = (req, res, next) => {
     }}
 
     // Middleware to check if user is admin
-export const adminMiddleware = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
+export const adminMiddleware = async (req, res, next) => {
+    const admin = await Admin.findById(req.user.id);
+    if (!admin) {
+      return res.status(401).json({ message: "Unauthorized: Admin not found" });
+    }
+  if (req.user && admin.role === "admin") {
     next();
   } else {
     return res.status(403).json({ message: "Forbidden: Admin access required" });

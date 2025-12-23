@@ -3,7 +3,9 @@ const studentRouter = express.Router();
 import {
   studentRegistrationOneBy,
   studentRegistrationMultiple,
+  updateMultipleStudents,
   updateSingleStudent,
+  deleteSingleStudents
 } from "../Controllers/students.controller.js";
 import { adminMiddleware, authMiddleware } from "../middleware/authMiddlware.js";
 
