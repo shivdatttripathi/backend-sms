@@ -5,7 +5,7 @@ import {
   studentRegistrationMultiple,
   updateMultipleStudents,
   updateSingleStudent,
-  deleteSingleStudents
+  deleteSingleStudent
 } from "../Controllers/students.controller.js";
 import { adminMiddleware, authMiddleware } from "../middleware/authMiddlware.js";
 
