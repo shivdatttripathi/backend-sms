@@ -1,12 +1,10 @@
-import studentsModel from "../Models/studentsModel";
-import { asyncHandler } from "../utils/async.handler";
-import { validateStudentRegistration ,validateBulkStudentRegister} from "../Vaildation/studentsValidation";
+import Student from "../Models/studentsModel.js";
+import  asyncHandler  from "../utils/async.handler.js";
 // Student Registration Controller
 //Register a one student
 const studentRegistrationOneBy = asyncHandler(async (req, res) => {
-
-  validateStudentRegistration(req.body);
-  const student = new studentsModel(req.body);
+ 
+  const student = new Student(req.body);
 
   await student.save();
   res.status(201).json({ message: "Student registered successfully", student });
@@ -25,8 +23,7 @@ const studentRegistrationMultiple = asyncHandler(async (req, res) => {
 // v1
   const createdStudents = await Promise.all(
     students.map(async (studentData) => {
-      validateStudentRegistration(studentData);
-      const student = new studentsModel(studentData);
+      const student = new Student(studentData);
       return await student.save();
     })
   );
@@ -43,7 +40,7 @@ const updateMultipleStudents = asyncHandler(async (req, res) => {
 
   const updatedStudents = await Promise.all(
     students.map(async (studentData) => {
-      const student = await studentsModel.findByIdAndUpdate(studentData._id, studentData, { new: true });
+      const student = await Student.findByIdAndUpdate(studentData._id, studentData, { new: true });
       return student;
     })
   );
@@ -55,7 +52,7 @@ const updateMultipleStudents = asyncHandler(async (req, res) => {
 //update single student by using form data
 const updateSingleStudent = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const student = await studentsModel.findByIdAndUpdate(id, req.body, { new: true });
+  const student = await Student.findByIdAndUpdate(id, req.body, { new: true });
   if (!student) {
     return res.status(404).json({ message: "Student not found" });
   }
@@ -65,7 +62,7 @@ const updateSingleStudent = asyncHandler(async (req, res) => {
 // delete single student
 const deleteSingleStudent = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const student = await studentsModel.findByIdAndDelete(id);
+  const student = await Student.findByIdAndDelete(id);
   if (!student) {
     return res.status(404).json({ message: "Student not found" });
   }
@@ -75,7 +72,7 @@ const deleteSingleStudent = asyncHandler(async (req, res) => {
 
 
 // Exporting the controllers
-module.exports = {
+export  {
   studentRegistrationOneBy,
   studentRegistrationMultiple,
   updateMultipleStudents,

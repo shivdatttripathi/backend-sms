@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const studentSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true },
@@ -10,11 +9,21 @@ const studentSchema = new mongoose.Schema(
     email: { type: String },
     profilePicture: { type: String },
 
+    // Academic details
+
+    schoolId: { type: mongoose.Schema.Types.ObjectId, ref: "School" },
+
+
     enrollmentNumber: { type: String, required: true, unique: true },
     admissionDate: { type: Date, default: Date.now },
     academicYear: { type: String },
     class: { type: String, required: true },
     section: { type: String },
+    rollNumber: { type: String },
+status: { type: String, enum: ["Active", "Inactive", "Graduated", "Transferred"], default: "Active" },
+sectionId: { type: mongoose.Schema.Types.ObjectId, ref: "Section" },
+
+    // Additional details
 
     guardian: {
       fatherName: String,
@@ -25,6 +34,10 @@ const studentSchema = new mongoose.Schema(
       guardianRelation: String,
       guardianContact: String,
       guardianEmail: String,
+    },
+    address: {
+      street: String,
+      city: String,
     },
 
     medicalRecords: {
@@ -37,6 +50,7 @@ const studentSchema = new mongoose.Schema(
       pickupLocation: String,
       routeNumber: String,
     },
+    bloodGroup: { type: String },
 
     loginPhone: { type: String },
     loginDOB: { type: Date },
@@ -45,4 +59,5 @@ const studentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Student", studentSchema);
+const Student = mongoose.model("Student", studentSchema);
+export default Student ;

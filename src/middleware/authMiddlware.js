@@ -1,7 +1,10 @@
 // check if user is authenticated using cookies jwt token
 import jwt from "jsonwebtoken";
+import SuperAdmin from "../Models/superAdminModel.js";
+import Admin from "../Models/adminModel.js";
 export const authMiddleware = (req, res, next) => {
   const token = req.cookies.token;
+  
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
@@ -40,8 +43,14 @@ export const studentMiddleware = (req, res, next) => {
 };
 
 // check if user is superadmin
-export const superAdminMiddleware = (req, res, next) => {
-  if (req.user && req.user.role === "superadmin") {
+export const superAdminMiddleware = async (req, res, next) => {
+    const superAdmin = await SuperAdmin.findById(req.user.id);
+    if (!superAdmin) {
+      return res.status(401).json({ message: "Unauthorized: Super Admin not found" });
+    }
+// double check role
+console.log(superAdmin);
+  if (superAdmin && superAdmin.role === "superAdmin") {
     next();
   } else {
     return res.status(403).json({ message: "Forbidden: Super Admin access required" });
