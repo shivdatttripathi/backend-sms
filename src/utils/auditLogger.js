@@ -1,7 +1,7 @@
 import AuditLogs  from "../Models/auditLogsModel.js";
 
 
-export const createAuditLog = async (req, action, module, entityId, entityType, changes = {}) => {
+ const createAuditLog = async (req, action, module, entityId, entityType, changes = {}) => {
   try {
     // Agar user login nahi hai ya req.user nahi hai toh log mat banao (Safety)
     if (!req.user) return;
@@ -25,3 +25,4 @@ export const createAuditLog = async (req, action, module, entityId, entityType, 
     console.error("Audit Log Error:", error); 
   }
 };
+export default createAuditLog;
