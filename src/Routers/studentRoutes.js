@@ -1,5 +1,6 @@
 import express from "express";
 const studentRouter = express.Router();
+import uploadExcel from "../middleware/multerMiddleware.js";
 import {
   registerStudent,
   getAllStudents,
@@ -9,14 +10,14 @@ import {
   bulkStudentRegister
   
 } from "../Controllers/students.controller.js";
-import { adminMiddleware, authMiddleware } from "../middleware/authMiddlware.js";
+import {  authMiddleware,adminMiddleware } from "../middleware/authMiddlware.js";
 
 // Route to register a single student
 studentRouter.use(authMiddleware,adminMiddleware);
 studentRouter.post("/register", registerStudent);
 
-// multiple students registration json
-studentRouter.post("/register-multiple", bulkStudentRegister);
+// multiple students registration via excel
+studentRouter.post("/bulk-register",uploadExcel.single("file"), bulkStudentRegister);
 
 //export student router
 export default studentRouter;

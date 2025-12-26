@@ -1,11 +1,11 @@
-import Student from "../models/Student.js";
 import xlsx from "xlsx";
 import fs from "fs";
 import createAuditLog from "../utils/auditLogger.js"
+import Student from "../Models/studentsModel.js"
 
 
 // Register a new student
-export const registerStudent = async (req, res) => {
+ const registerStudent = async (req, res) => {
   try {
     const { email, admissionNo } = req.body;
 
@@ -31,7 +31,7 @@ export const registerStudent = async (req, res) => {
 };
 
 // Get all students with optional filters
-export const getAllStudents = async (req, res) => {
+ const getAllStudents = async (req, res) => {
   try {
     // Apply filters if query params exist (e.g., ?classId=...)
     const query = {};
@@ -47,7 +47,7 @@ export const getAllStudents = async (req, res) => {
 };
 
 // Get single student details
-export const getStudentDetail = async (req, res) => {
+ const getStudentDetail = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ message: "Student not found" });
@@ -59,7 +59,7 @@ export const getStudentDetail = async (req, res) => {
 };
 
 // Update student data
-export const updateStudent = async (req, res) => {
+ const updateStudent = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -84,7 +84,7 @@ export const updateStudent = async (req, res) => {
 };
 
 // Delete student
-export const deleteStudent = async (req, res) => {
+ const deleteStudent = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -108,7 +108,7 @@ export const deleteStudent = async (req, res) => {
 };
 
 // Bulk register students via Excel
-export const bulkStudentRegister = async (req, res) => {
+ const bulkStudentRegister = async (req, res) => {
   try {
     // Check if file is uploaded
     if (!req.file) {
@@ -131,7 +131,6 @@ export const bulkStudentRegister = async (req, res) => {
     const studentsWithSchool = rawData.map(student => ({
         ...student,
         schoolId: req.user.schoolId, 
-        password: "defaultPassword123" // Set default password
     }));
 
     // Bulk Insert for performance
